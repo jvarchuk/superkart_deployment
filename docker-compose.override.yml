@@ -1,0 +1,6 @@
+services:
+  frontend:
+    network_mode: host
+    ports: !reset []
+    environment:
+      BACKEND_URL: http://localhost:7860
