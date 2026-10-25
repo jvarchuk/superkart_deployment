@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7860/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8501:8501"
+    environment:
+      # Compose puts both services on one network; "backend" resolves by service name
+      BACKEND_URL: http://backend:7860
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
